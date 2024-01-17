@@ -1,5 +1,5 @@
 # Deep-Lossy-Plus-Residual-Coding
-Deep Lossy Plus Residual Coding for Lossless and Near-lossless Image Compression (TPAMI'24), which achieves the state-of-the-art compression performance with fast running speed.
+Deep Lossy Plus Residual (DLPR) coding is the state-of-the-art learning-based lossless and near-lossless image compression method with fast running speed (TPAMI'24).
 ![framework](./figures/network_architecture.png)
 
 ## Usage
@@ -8,10 +8,10 @@ The code is run with `Python 3.9`, `Pytorch 1.11.0`, `Timm 0.5.4`, `Torchac 0.9.
 ### Data preparation
 Updating
 
-### DLPR for lossless compression
+### DLPR coding for lossless compression
 Upating
 
-### DLPR for near-lossless compression
+### DLPR coding for near-lossless compression
 Updating
 
 ## Citation

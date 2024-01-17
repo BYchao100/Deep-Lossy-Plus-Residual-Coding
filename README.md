@@ -20,7 +20,7 @@ Download and extract `DIV2K_train_HR` and `DIV2K_valid_HR` high-resolution image
   extract_patches_train.py
   extract_patches_valid.py
 ```
-Run `extract_patches_train.py` and `extract_patches_valid.py` to crop 2K images into $128\times 128$ patches for network training.
+Run `extract_patches_train.py` and `extract_patches_valid.py` to crop 2K images into $128\times 128$ patches for network training and validation.
 
 ### DLPR coding for lossless compression
 Upating

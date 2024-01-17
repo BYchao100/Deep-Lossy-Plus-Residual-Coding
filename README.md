@@ -6,7 +6,19 @@ Deep Lossy Plus Residual (DLPR) coding is the state-of-the-art learning-based lo
 The code is run with `Python 3.9`, `Pytorch 1.11.0`, `Timm 0.5.4`, `Torchac 0.9.3` and `Compressai 1.2.0`.
 
 ### Data preparation
-Updating
+Download and extract `DIV2K_train_HR` and `DIV2K_valid_HR` high-resolution images from https://data.vision.ee.ethz.ch/cvl/DIV2K/ to `./Datasets`. 
+```
+./Datasets/
+  DIV2K_train_HR/
+      img1.png
+      img2.png
+  DIV2K_valid_HR/
+      img3.png
+      img4.png
+  extract_patches_train.py
+  extract_patches_valid.py
+```
+Run `extract_patches_train.py` and `extract_patches_valid.py` to crop 2K images into $128\times 128$ patches for network training.
 
 ### DLPR coding for lossless compression
 Upating

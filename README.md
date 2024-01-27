@@ -21,14 +21,17 @@ Download and extract `DIV2K_train_HR` and `DIV2K_valid_HR` high-resolution image
 ```
 Run `extract_patches_train.py` and `extract_patches_valid.py` to crop 2K images into $128\times 128$ patches for network training and validation.
 
-### DLPR coding for lossless compression
+### DLPR coding for lossless compression ($\tau=0$)
 In `DLPR_ll` folder, we provide the DLPR coding system for lossless compression only, without Scalable Quantized Residual Compressor. 
 * Run `train.py` to train the DLPR coding system.
 
 * Run `test.py` to encode and decode test images. Please adjust `input_path` to evaluate your own images.
 
 ### DLPR coding for near-lossless compression ($\tau\ge0$)
-Updating
+In `DLPR_nll` folder, we provide the DLPR coding system for scalable near-lossless compression. 
+* Run `train.py` to train the DLPR coding system.
+
+* Run `test.py` to encode and decode test images. Please adjust `input_path` and `tau` to evaluate your own images.
 
 ## Citation
 

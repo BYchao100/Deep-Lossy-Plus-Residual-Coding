@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from ll_model_eval import LosslessCompressor
+from nll_model_eval import NearLosslessCompressor
 
 from PIL import Image
 import numpy as np
@@ -17,7 +17,7 @@ torch.backends.cudnn.benchmark = False
 
 def coding_order_table7x7(patch_sz=64, mask_type="3P"):
     
-    if mask_type not in ("5P", "4P", "3P", "2P", "P", "S"):
+    if mask_type not in ("5P", "4P", "3P", "2P", "P"):
         raise ValueError(f'Invalid "mask_type" value "{mask_type}"')
 
     COT = torch.zeros(patch_sz, patch_sz, dtype=torch.int64)
@@ -41,11 +41,7 @@ def coding_order_table7x7(patch_sz=64, mask_type="3P"):
     elif mask_type == "P":
         for i in range(patch_sz):
             start = 1
-            COT[i, :] = torch.arange(start, start + patch_sz)
-    elif mask_type == "S":
-        for i in range(patch_sz):
-            start = patch_sz * i + 1
-            COT[i, :] = torch.arange(start, start + patch_sz)
+            COT[i, :] = torch.arange(start, start + patch_sz)      
 
     return COT
 
@@ -143,11 +139,19 @@ def compress(model, input, COT, tau=0, patch_sz=64, mix_num=5):
             res_tmp_crop = res_tmp[:, :, h_idx, w_idx]
 
             res_tmp_crop = res_tmp_crop.unsqueeze(3)
- 
-            rp_ctx = model.fusion(torch.cat((rp, ctx), 1))
-            lmm_params = model.residual_compressor(rp_ctx)
-            mu, log_sigma, coeffs, weights = torch.split(lmm_params, 15, dim=1)
-            coeffs = torch.tanh(coeffs)
+
+            if tau == 0:
+                rp_ctx = model.fusion(torch.cat((rp, ctx), 1))
+                lmm_params = model.residual_compressor(rp_ctx)
+                mu, log_sigma, coeffs, weights = torch.split(lmm_params, 15, dim=1)
+                coeffs = torch.tanh(coeffs)
+            elif tau > 0:
+                if tau > 5:
+                    tau = 5
+                rp_ctx = model.fusion_cond.run(torch.cat((rp, ctx), 1), tau-1)
+                lmm_params = model.residual_compressor_cond.run(rp_ctx, tau-1)
+                mu, log_sigma, coeffs, weights = torch.split(lmm_params, 15, dim=1)
+                coeffs = torch.tanh(coeffs)               
 
             for c in range(3):
                 if c==0:
@@ -230,6 +234,7 @@ def decompress(model, code_lossy, code_res, img_shape, res_range, COT, tau=0, mi
 
         x_hat = rec_lossy["x_hat"]
         res_prior = rec_lossy["res_prior"]
+
         res_tmp = torch.zeros_like(x_hat)
         max_step = torch.max(COT)
 
@@ -239,12 +244,21 @@ def decompress(model, code_lossy, code_res, img_shape, res_range, COT, tau=0, mi
             h_idx, w_idx = torch.nonzero(COT == i + 1, as_tuple=True)
             ctx = model.mask_conv(res_tmp * norm_scale)[:, :, h_idx, w_idx].unsqueeze(3)
             rp = res_prior[:, :, h_idx, w_idx].unsqueeze(3)
+
             res_crop = res_tmp[:, :, h_idx, w_idx].unsqueeze(3)
 
-            rp_ctx = model.fusion(torch.cat((rp, ctx), 1))
-            lmm_params = model.residual_compressor(rp_ctx)
-            mu, log_sigma, coeffs, weights = torch.split(lmm_params, 15, dim=1)
-            coeffs = torch.tanh(coeffs)
+            if tau == 0:
+                rp_ctx = model.fusion(torch.cat((rp, ctx), 1))
+                lmm_params = model.residual_compressor(rp_ctx)
+                mu, log_sigma, coeffs, weights = torch.split(lmm_params, 15, dim=1)
+                coeffs = torch.tanh(coeffs)
+            elif tau > 0:
+                if tau > 5:
+                    tau = 5
+                rp_ctx = model.fusion_cond.run(torch.cat((rp, ctx), 1), tau-1)
+                lmm_params = model.residual_compressor_cond.run(rp_ctx, tau-1)
+                mu, log_sigma, coeffs, weights = torch.split(lmm_params, 15, dim=1)
+                coeffs = torch.tanh(coeffs)  
 
             for c in range(3):
                 if c==0:
@@ -271,6 +285,7 @@ def decompress(model, code_lossy, code_res, img_shape, res_range, COT, tau=0, mi
                 cdf_delta = torch.where(samples2 - half < res_q_min_norm, cdf_plus,
                                         torch.where(samples2 + half > res_q_max_norm, one_minus_cdf_min,
                                                     cdf_delta))
+
 
                 weights_c = weights.permute(0, 2, 1, 3)
                 m = torch.amax(weights_c, 2, keepdim=True)
@@ -302,47 +317,50 @@ def decompress(model, code_lossy, code_res, img_shape, res_range, COT, tau=0, mi
 
 if __name__ == "__main__":
 
-    ckp_dir = "./ckp_ll"
+    ckp_dir = "./ckp_nll"
+
+    tau = 1 # near-lossless constraint (0, 1, 2, 3, ...)
 
     input_path = "../test_imgs/kodim01.png"
-    rec_path = input_path[:-4]+"_rec.png"
-    
+    rec_path = input_path[:-4]+"_t"+str(tau)+"_rec.png"
+
     COT = coding_order_table7x7()
 
     device = torch.device('cuda')
-    ll_module = LosslessCompressor(192).eval().to(device)
+    nll_module = NearLosslessCompressor(192, 5).eval().to(device)
 
     ckp = torch.load(os.path.join(ckp_dir, "ckp.tar"), map_location=device)
-    ll_module.load_state_dict(ckp['model_state_dict'])
-    ll_module.lossy_compressor.update(force=True)
+    nll_module.load_state_dict(ckp['model_state_dict'])
+    nll_module.lossy_compressor.update(force=True)
 
     im = Image.open(input_path)
     I = np.array(im).astype(np.float32)
 
 ####################### DLPR Coding ############################
-    
-    code_lossy, code_res, img_shape, res_range = compress(ll_module, I, COT)
+
+    code_lossy, code_res, img_shape, res_range = compress(nll_module, I, COT, tau)
 
     img_ls_sz = sum([len(code_lossy['img_strings'][0][i]) + len(code_lossy['img_strings'][1][i]) for i in range(len(code_lossy['img_strings'][0]))])
     res_sz = sum([len(code_res[i]) for i in range(len(code_res))])
-    ll_sz = img_ls_sz + res_sz + 6 * 4 # lossy_image_bitstream + residual_bitstream + z_shape + image_shape + residual_range
+    nll_sz = img_ls_sz + res_sz + 6 * 4 # lossy_image_bitstream + residual_bitstream + z_shape + image_shape + residual_range
 
-    I_ll = decompress(ll_module, code_lossy, code_res, img_shape, res_range, COT)
+    I_nll = decompress(nll_module, code_lossy, code_res, img_shape, res_range, COT, tau)
 
 ################################################################
 
-    I_ll = I_ll.cpu().numpy()
-    max_diff = np.max(np.abs(I_ll-I))
-    mse_loss = np.mean((I-I_ll)**2)
-    psnr = 10. * np.log10(255. ** 2 / mse_loss)
-    print("max diff nll:{}, psnr:{}".format(max_diff, psnr))
+    I_nll = I_nll.cpu().numpy()
+    max_diff = np.max(np.abs(I_nll-I))
+    mse_loss = np.mean((I-I_nll)**2)
+    psnr_nll = 10. * np.log10(255. ** 2 / mse_loss)
+    print("max diff nll:{}, psnr nll:{:.4f}".format(max_diff, psnr_nll))
 
-    I_ll = I_ll.astype(np.uint8)
-    im_nll = Image.fromarray(I_ll)
+    I_nll = I_nll.astype(np.uint8)
+    im_nll = Image.fromarray(I_nll)
     im_nll.save(rec_path)
 
     img_bpsp = img_ls_sz*8/np.prod(I.shape)
     res_bpsp = res_sz*8/np.prod(I.shape)
-    bpsp = ll_sz*8/np.prod(I.shape)
+    bpsp = nll_sz*8/np.prod(I.shape)
 
     print("bpsp:{:.4f}, img_bpsp:{:.4f}, res_bpsp:{:.4f}".format(bpsp, img_bpsp, res_bpsp))
+

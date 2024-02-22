@@ -27,11 +27,15 @@ In `DLPR_ll` folder, we provide the DLPR coding system for lossless compression 
 
 * Run `test.py` to encode and decode test images. Please adjust `input_path` to evaluate your own images.
 
+The trained model `ckp_ll_trained` can be downloaded from [`Baidu Netdisk`](https://pan.baidu.com/s/1SrLK2OWhtFhn1BlobSdTmg) with access code `dlpr`.
+
 ### DLPR coding for near-lossless compression ($\tau\ge0$)
 In `DLPR_nll` folder, we provide the DLPR coding system for scalable near-lossless compression. 
 * Run `train.py` to train the DLPR coding system.
 
 * Run `test.py` to encode and decode test images. Please adjust `input_path` and `tau` to evaluate your own images.
+
+The trained model `ckp_nll_trained` can be downloaded from [`Baidu Netdisk`](https://pan.baidu.com/s/1SrLK2OWhtFhn1BlobSdTmg) with access code `dlpr`.
 
 ## Citation
 

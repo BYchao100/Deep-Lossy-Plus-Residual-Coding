@@ -4,6 +4,8 @@ Deep Lossy Plus Residual (DLPR) coding is the state-of-the-art learning-based lo
 ## Usage
 The code is run with `Python 3.9`, `Pytorch 1.11.0`, `Cudatoolkit 11.3.1`, `Timm 0.5.4`, `Torchac 0.9.3` and `Compressai 1.2.0`.
 
+**Please note**: Inconsistent pytorch and cuda versions, especially higher versions, may cause failure.
+
 ### Data preparation
 Download and extract `DIV2K_train_HR` and `DIV2K_valid_HR` high-resolution images from [`DIV2K Dataset`](https://data.vision.ee.ethz.ch/cvl/DIV2K/) to `Datasets` folder. 
 ```

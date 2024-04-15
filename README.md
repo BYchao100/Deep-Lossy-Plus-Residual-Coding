@@ -47,7 +47,9 @@ The trained model `ckp_nll_trained` can be downloaded from [`Baidu Netdisk`](htt
   journal={IEEE Transactions on Pattern Analysis and Machine Intelligence}, 
   title={Deep Lossy Plus Residual Coding for Lossless and Near-lossless Image Compression}, 
   year={2024},
-  pages={1-18},
+  volume={46},
+  number={5},
+  pages={3577-3594},
   doi={10.1109/TPAMI.2023.3348486}
 }
 ```

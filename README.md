@@ -27,7 +27,7 @@ Run `extract_patches_train.py` and `extract_patches_valid.py` to crop 2K images 
 In `DLPR_ll` folder, we provide the DLPR coding system for lossless compression only, without Scalable Quantized Residual Compressor. 
 * Run `train.py` to train the DLPR coding system.
 
-* Run `test.py` to encode and decode test images with arbitrary sizes. Please adjust `input_path` to evaluate your own images.
+* Run `test.py` to encode and decode test images with **arbitrary sizes**. Please adjust `input_path` to evaluate your own images.
 
 The trained model `ckp_ll_trained` can be downloaded from [`Baidu Netdisk`](https://pan.baidu.com/s/1SrLK2OWhtFhn1BlobSdTmg) with access code `dlpr`.
 
@@ -35,7 +35,7 @@ The trained model `ckp_ll_trained` can be downloaded from [`Baidu Netdisk`](http
 In `DLPR_nll` folder, we provide the DLPR coding system for scalable near-lossless compression. 
 * Run `train.py` to train the DLPR coding system.
 
-* Run `test.py` to encode and decode test images with arbitrary sizes. Please adjust `input_path` and `tau` to evaluate your own images.
+* Run `test.py` to encode and decode test images with **arbitrary sizes**. Please adjust `input_path` and `tau` to evaluate your own images.
 
 The trained model `ckp_nll_trained` can be downloaded from [`Baidu Netdisk`](https://pan.baidu.com/s/1SrLK2OWhtFhn1BlobSdTmg) with access code `dlpr`.
 

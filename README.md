@@ -1,5 +1,5 @@
 # Deep-Lossy-Plus-Residual-Coding
-Deep Lossy Plus Residual (DLPR) coding is the state-of-the-art learning-based lossless and near-lossless image compression algorithm with fast running speed (TPAMI'24).
+Deep Lossy Plus Residual (DLPR) coding is the state-of-the-art learning-based lossless and near-lossless image compression algorithm with fast running speed (TPAMI'24, Journal extension of our CVPR'21 work).
 
 ## Usage
 The code is run with `Python 3.9`, `Pytorch 1.11.0`, `Cudatoolkit 11.3.1`, `Timm 0.5.4`, `Torchac 0.9.3` and `Compressai 1.2.0`.

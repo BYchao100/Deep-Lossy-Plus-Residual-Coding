@@ -29,6 +29,10 @@ In `DLPR_ll` folder, we provide the DLPR coding system for lossless compression 
 
 * Run `test.py` to encode and decode test images of **arbitrary sizes**. Please adjust `input_path` to evaluate your own images.
 
+* **Update** `encode.py`: Run `python encode.py -i input.png -o bitstream.bin` to encode `input.png` to `bitstream.bin`.
+
+* **Update** `decode.py`: Run `python decode.py -i bitstream.bin -o rec.png` to decode `bitstream.bin` to `rec.png`.
+
 The trained model `ckp_ll_trained` can be downloaded from [`Baidu Netdisk`](https://pan.baidu.com/s/1SrLK2OWhtFhn1BlobSdTmg) with access code `dlpr`.
 
 ### DLPR coding for near-lossless compression ($\tau\ge0$)
@@ -36,6 +40,10 @@ In `DLPR_nll` folder, we provide the DLPR coding system for scalable near-lossle
 * Run `train.py` to train the DLPR coding system with $\lambda=0.03$.
 
 * Run `test.py` to encode and decode test images of **arbitrary sizes**. Please adjust `input_path` and `tau` to evaluate your own images. If $\tau=0$, the special case is lossless image compression. However, `DLPR_ll` with $\lambda=0$ enjoys better lossless compression performance.
+
+* **Update** `encode.py`: Run `python encode.py -tau k -i input.png -o bitstream.bin` to encode `input.png` to `bitstream.bin` with $\tau=k$.
+
+* **Update** `decode.py`: Run `python decode.py -i bitstream.bin -o rec.png` to decode `bitstream.bin` to `rec.png`.
 
 The trained model `ckp_nll_trained` can be downloaded from [`Baidu Netdisk`](https://pan.baidu.com/s/1SrLK2OWhtFhn1BlobSdTmg) with access code `dlpr`.
 

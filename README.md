@@ -33,7 +33,8 @@ In `DLPR_ll` folder, we provide the DLPR coding system for lossless compression 
 
 * **Update** `decode.py`: Run `python decode.py -i bitstream.bin -o rec.png` to decode `bitstream.bin` to `rec.png`.
 
-The trained model `ckp_ll_trained` can be downloaded from [`Baidu Netdisk`](https://pan.baidu.com/s/1SrLK2OWhtFhn1BlobSdTmg) with access code `dlpr`.
+The trained model `ckp_ll` can be downloaded from [`Baidu Netdisk`](https://pan.baidu.com/s/1SrLK2OWhtFhn1BlobSdTmg) with access code `dlpr`. 
+Please put `ckp_ll` in the `DLPR_ll` folder.
 
 ### DLPR coding for near-lossless compression ($\tau\ge0$)
 In `DLPR_nll` folder, we provide the DLPR coding system for scalable near-lossless compression. 
@@ -45,7 +46,8 @@ In `DLPR_nll` folder, we provide the DLPR coding system for scalable near-lossle
 
 * **Update** `decode.py`: Run `python decode.py -i bitstream.bin -o rec.png` to decode `bitstream.bin` to `rec.png`.
 
-The trained model `ckp_nll_trained` can be downloaded from [`Baidu Netdisk`](https://pan.baidu.com/s/1SrLK2OWhtFhn1BlobSdTmg) with access code `dlpr`.
+The trained model `ckp_nll` can be downloaded from [`Baidu Netdisk`](https://pan.baidu.com/s/1SrLK2OWhtFhn1BlobSdTmg) with access code `dlpr`.
+Please put `ckp_nll` in the `DLPR_nll` folder.
 
 ## Citation
 
